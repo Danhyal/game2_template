@@ -51,8 +51,10 @@ def print_room_items(room):
     Note: <BLANKLINE> here means that doctest should expect a blank line.
 
     """
-    pass
-
+    if len(list_of_items(room["items"])) != 0:
+        print("There is {} here.\n".format(list_of_items(room["items"])))
+    else:
+        pass
 
 def print_inventory_items(items):
     """This function takes a list of inventory items and displays it nicely, in a
@@ -64,7 +66,7 @@ def print_inventory_items(items):
     <BLANKLINE>
 
     """
-    pass
+    print("You have {}.\n".format(list_of_items(items)))
 
 
 def print_room(room):
@@ -120,11 +122,10 @@ def print_room(room):
     # Display room description
     print(room["description"])
     print()
-
+    print_room_items(room)
     #
     # COMPLETE ME!
     #
-
 def exit_leads_to(exits, direction):
     """This function takes a dictionary of exits and a direction (a particular
     exit taken from this dictionary). It returns the name of the room into which
@@ -188,16 +189,22 @@ def print_menu(exits, room_items, inv_items):
     """
     print("You can:")
     # Iterate over available exits
+    print(room_items)
     for direction in exits:
         # Print the exit name and where it leads to
         print_exit(direction, exit_leads_to(exits, direction))
+    for i in room_items:
+        print("TAKE {} to take {}".format(i["id"], i["name"]))
+    for i in inv_items:
+        print("DROP {} to drop your {}".format(i["id"].upper(),i["name"]))
+
 
     #
     # COMPLETE ME!
     #
-    
-    print("What do you want to do?")
 
+    print("What do you want to do?")
+    # print_menu(current_room["exits"], current_room["items"], inventory)
 
 def is_valid_exit(exits, chosen_exit):
     """This function checks, given a dictionary "exits" (see map.py) and
@@ -224,8 +231,18 @@ def execute_go(direction):
     (and prints the name of the room into which the player is
     moving). Otherwise, it prints "You cannot go there."
     """
-    pass
-
+    global current_room
+    if direction.lower() not in current_room["exits"]:
+        print("You cannot go there")
+    for i in current_room["exits"]:
+        if direction.lower()==i:
+            print(rooms[current_room["exits"][i]]["name"])
+            current_room=rooms[current_room["exits"][i]]
+        else:
+            pass
+# print(current_room)
+# execute_go("NORTH")
+# print(current_room)
 
 def execute_take(item_id):
     """This function takes an item_id as an argument and moves this item from the
@@ -233,16 +250,24 @@ def execute_take(item_id):
     there is no such item in the room, this function prints
     "You cannot take that."
     """
-    pass
-    
+    keys=[x["id"] for x in current_room["items"]]
+    if item_id not in keys:
+        print("You cannot take that")
+    else:
+        print(current_room["items"])
+        items=[x for x in current_room["items"] if x["id"]==item_id]
+        for i in items:
+            inventory.append(i)
 
+
+# execute_take("biscuits")
 def execute_drop(item_id):
     """This function takes an item_id as an argument and moves this item from the
     player's inventory to list of items in the current room. However, if there is
     no such item in the inventory, this function prints "You cannot drop that."
     """
     pass
-    
+
 
 def execute_command(command):
     """This function takes a command (a list of words as returned by
