@@ -189,7 +189,6 @@ def print_menu(exits, room_items, inv_items):
     """
     print("You can:")
     # Iterate over available exits
-    print(room_items)
     for direction in exits:
         # Print the exit name and where it leads to
         print_exit(direction, exit_leads_to(exits, direction))
@@ -232,11 +231,11 @@ def execute_go(direction):
     moving). Otherwise, it prints "You cannot go there."
     """
     global current_room
+
     if direction.lower() not in current_room["exits"]:
         print("You cannot go there")
     for i in current_room["exits"]:
         if direction.lower()==i:
-            print(rooms[current_room["exits"][i]]["name"])
             current_room=rooms[current_room["exits"][i]]
         else:
             pass
@@ -254,9 +253,9 @@ def execute_take(item_id):
     if item_id not in keys:
         print("You cannot take that")
     else:
-        print(current_room["items"])
         items=[x for x in current_room["items"] if x["id"]==item_id]
         for i in items:
+            current_room["items"].remove(i)
             inventory.append(i)
 
 
@@ -274,6 +273,7 @@ def execute_drop(item_id):
     else:
         items = [x for x in inventory if x["id"] == item_id]
         for i in items:
+            inventory.remove(i)
             current_room["items"].append(i)
 
 
